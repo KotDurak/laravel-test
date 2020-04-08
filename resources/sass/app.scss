@@ -1,0 +1,27 @@
+$aside-bg-color:blueviolet;
+$navbar-bg:gray;
+
+.app__logo{
+  background: $aside-bg-color;
+  color:white;
+
+  .title{
+    color:white;
+  }
+}
+
+
+.app__sidebar{
+  background:$aside-bg-color;
+}
+
+.app__nav{
+  background: $navbar-bg;
+  margin-left: 0;
+  margin-right: 0;
+
+  .is-one-fifth{
+    position: relative;
+    top: 12%;
+  }
+}
