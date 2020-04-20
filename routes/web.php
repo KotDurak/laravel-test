@@ -28,3 +28,13 @@ Route::get('/settings', function() {
 Route::get('project/{id}', function($id) {
     return 'Id проекта ' . $id;
 });
+
+Route::get('users', 'UserController@index');
+
+Route::get('users/create', 'UserController@create');
+
+Route::get('users/update/{id}', 'UserController@update');
+
+Route::post('users/storage', 'UserController@storage');
+
+Route::put('users/edit/{id}', 'UserController@edit');

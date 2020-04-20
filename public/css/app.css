@@ -1,5 +1,5 @@
-.app__logo {
-  background: blueviolet;
+.app__logo, .app__sidebar {
+  background: #342a3d;
   color: white;
 }
 
@@ -8,7 +8,7 @@
 }
 
 .app__sidebar {
-  background: blueviolet;
+  background: #342a3d;
 }
 
 .app__nav {

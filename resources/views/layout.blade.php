@@ -19,6 +19,7 @@
                 <ul>
                     <li><a href="{{url('projects')}}" class="has-text-white">Проекты</a></li>
                     <li><a href="{{url('settings')}}" class="has-text-white">Настройки</a></li>
+                    <li><a href="{{url('users')}}" class="has-text-white">Сотрудники</a></li>
                 </ul>
             </nav>
         </div>
