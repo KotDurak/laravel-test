@@ -23,6 +23,10 @@
                 </ul>
             </nav>
         </div>
+        <div class="column search" id="search-app">
+            <search></search>
+        </div>
+
         <div class="column is-pull-right is-one-fifth">
             <figure class="image is-64x64">
                 <img class="is-rounded" src="https://bulma.io/images/placeholders/128x128.png">
@@ -39,5 +43,8 @@
         @show
     </div>
 </div>
+<script type="text/javascript" src="<?php echo asset('assets/js/jquery.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo asset('assets/js/main.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo asset('js/app.js') ?>"></script>
 </body>
 </html>

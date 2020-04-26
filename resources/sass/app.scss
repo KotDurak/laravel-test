@@ -1,4 +1,4 @@
-$aside-bg-color:blueviolet;
+$aside-bg-color:#040303;
 $navbar-bg:gray;
 
 .app__logo{
@@ -23,5 +23,15 @@ $navbar-bg:gray;
   .is-one-fifth{
     position: relative;
     top: 12%;
+  }
+
+  > .search{
+    margin-top: 10px;
+    position: relative;
+
+    .type{
+      color: gray;
+      opacity: 0.5;
+    }
   }
 }

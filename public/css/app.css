@@ -1,5 +1,5 @@
-.app__logo, .app__sidebar {
-  background: #342a3d;
+.app__logo {
+  background: #040303;
   color: white;
 }
 
@@ -8,7 +8,7 @@
 }
 
 .app__sidebar {
-  background: #342a3d;
+  background: #040303;
 }
 
 .app__nav {
@@ -20,5 +20,15 @@
 .app__nav .is-one-fifth {
   position: relative;
   top: 12%;
+}
+
+.app__nav > .search {
+  margin-top: 10px;
+  position: relative;
+}
+
+.app__nav > .search .type {
+  color: gray;
+  opacity: 0.5;
 }
 

@@ -25,6 +25,12 @@
                             <td>{{$user->email}}</td>
                             <td>
                                 <a href="{{url('users/update', ['id' => $user->id])}}"><i class="fa fa-edit"></i></a>
+                                <form class="delete-form" action="{{ url('users', $user->id)}}" method="post">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button style="display: none" class="btn btn-danger" type="submit">Delete</button>
+                                    <a class="remove-item"><i class="fa fa-trash"></i></a>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
