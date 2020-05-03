@@ -17,7 +17,7 @@ class MainPage extends Controller
     {
         $events = Event::orderBy('id', 'desc')
             ->limit(10)->get();
-
+  //      dd(env('NODE_HOST'));
         return view('home', [
             'events'    => $events
         ]);

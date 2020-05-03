@@ -1,3 +1,7 @@
+<?php
+use Illuminate\Support\Facades\Auth;
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,9 +32,11 @@
         </div>
 
         <div class="column is-pull-right is-one-fifth">
-            <figure class="image is-64x64">
-                <img class="is-rounded" src="https://bulma.io/images/placeholders/128x128.png">
-            </figure>
+            @if (Auth::check())
+                <a href="{{url('logout')}}"><span class="tag is-primary">{{Auth::user()->email}} (выход)</span></a>
+            @else
+                <a href="{{url('login')}}"><span class="tag is-primary">Вход</span></a>
+            @endif
         </div>
     </div>
 </div>
@@ -43,6 +49,9 @@
         @show
     </div>
 </div>
+@if (Auth::check())
+<div id="socket-data" data-ws-host="{{env('NODE_HOST')}}" data-user-id="{{Auth::user()->id}}"></div>
+@endif
 <script type="text/javascript" src="<?php echo asset('assets/js/jquery.min.js'); ?>"></script>
 <script type="text/javascript" src="<?php echo asset('assets/js/main.js'); ?>"></script>
 <script type="text/javascript" src="<?php echo asset('js/app.js') ?>"></script>

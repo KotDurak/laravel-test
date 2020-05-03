@@ -5,7 +5,7 @@
  */
 
 require('./bootstrap');
-
+require('./chat');
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -29,3 +29,16 @@ Vue.component('search', require('./components/search.vue').default);
 const search = new Vue({
    el:'#search-app'
 });
+
+var chat = document.querySelector('#chat');
+
+if (chat) {
+
+   Vue.component('chat', require('./components/chat.vue').default);
+   Vue.component('chat-form', require('./components/ChatForm.vue').default);
+   Vue.component('messages-list', require('./components/MessagesList.vue').default);
+
+    new Vue({
+        el:'#chat'
+    });
+}

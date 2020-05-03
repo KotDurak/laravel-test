@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('login', 'LoginController@login')->name('login');
+
+Route::get('logout', 'LoginController@logout');
+
+Route::get('auth', 'LoginController@auth');
+
 Route::get('/', 'MainPage');
 
 Route::get('/projects', 'ProjectController@index');
@@ -36,5 +42,11 @@ Route::put('users/edit/{id}', 'UserController@edit');
 Route::delete('users/{id}', 'UserController@delete');
 
 Route::get('projects/create', 'ProjectController@create')->name('project.create');
+
+Route::middleware(['auth'])->group(function(){
+    Route::get('chat/{id}', 'ChatController@index')->name('chat');
+});
+
+
 
 Route::post('projects/store', 'ProjectController@store')->name('project.store');

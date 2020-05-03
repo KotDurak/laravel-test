@@ -1,3 +1,9 @@
+@import "variables";
+
+body{
+  background: $body-bg;
+}
+
 $aside-bg-color:#040303;
 $navbar-bg:gray;
 
@@ -34,4 +40,8 @@ $navbar-bg:gray;
       opacity: 0.5;
     }
   }
+}
+
+#chat{
+  margin-top: 10px;
 }

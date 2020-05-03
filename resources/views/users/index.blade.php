@@ -21,7 +21,11 @@
                 <tbody>
                     @foreach ($users as $user)
                         <tr>
-                            <td>  {{ $user->name }}</td>
+                            <td>  {{ $user->name }}
+                                @if ($user->id !== \Illuminate\Support\Facades\Auth::user()->id)
+                                <a href="{{route('chat', ['id' => $user->id])}}"><i class="fa fa-comment"></i></a>
+                                @endif
+                            </td>
                             <td>{{$user->email}}</td>
                             <td>
                                 <a href="{{url('users/update', ['id' => $user->id])}}"><i class="fa fa-edit"></i></a>

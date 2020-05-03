@@ -13,6 +13,11 @@ class UserController extends Controller
     const USER_ON_TABLE = 10;
 
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
         $users = User::orderBy('id', 'desc')->paginate(self::USER_ON_TABLE);
