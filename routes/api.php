@@ -22,3 +22,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('search', 'ApiController@search');
 
 Route::post('chat/send-message', 'ChatController@send');
+
+Route::post('chat/upload-message', 'ChatController@upload');

@@ -3,33 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Message;
+use App\Services\ChatService;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ChatController extends Controller
 {
+    private $chatService;
+
+    public function __construct(ChatService $chatService)
+    {
+        $this->chatService = $chatService;
+    }
+
     public function index($id)
     {
         $user = User::findOrFail($id);
         $user_from = Auth::user()->id;
 
-        $messages = Message::where(['user_from' => $user_from, 'user_to' => $user->id])
-            ->orWhereRaw('(user_to = ? and user_from = ?)',[$user_from, $user->id])
-            ->with('userFrom')
-            ->with('userTo')
-            ->orderBy('id', 'asc')
-            ->get()->map(function ($m) use ($user_from) {
-                return [
-                  'id'  => $m->id,
-                  'author_id'    => $m->user_from,
-                  'message' => $m->message,
-                  'user_from'   => $m->userFrom->name,
-                  'user_to' => $m->userTo->name,
-                  'self'    =>  $m->user_from === $user_from,
-                  'time'    => $m->created_at
-                ];
-            });
+        $messages = $this->chatService->getLastMessages($user_from, $user->id);
 
         return view('chat.index', [
             'user_to'   => $user->id,
@@ -68,5 +61,25 @@ class ChatController extends Controller
             'code'  => 1,
             'message'   => 'Error by sendind message'
         ];
+    }
+
+    public function upload(Request $request)
+    {
+        $post = $request->post();
+        $validate = $this->validate($request, [
+           'id' => 'required|int',
+           'self'  => 'required|bool'
+        ]);
+
+        if ($validate) {
+            $lastMessage = Message::findOrFail($post['id']);
+            $selfId = $post['self'] ? $lastMessage->user_from : $lastMessage->user_to;
+            $messages = $this->chatService->getLastMessagesByLastId($lastMessage->user_from, $lastMessage->user_to, $post['id'], $selfId);
+
+            return [
+                'code'  => 0,
+                'messages' => $messages
+            ];
+        }
     }
 }

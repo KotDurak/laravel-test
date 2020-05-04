@@ -1,6 +1,8 @@
 <template>
     <div id="messages-list" @scroll="scrollList">
-        <div class="notification is-primary" v-bind:class="message.self ? 'is-primary' : 'is-link'" v-for="message in messages">
+        <div class="notification is-primary" v-bind:class="message.self ? 'is-primary' : 'is-link'" v-for="message in messages"
+             v-bind:key="message.id"
+        >
             <a href="" v-if="!message.self"><strong>{{message.user_from}}</strong></a>
             <strong v-else>Я</strong>
             <p>{{message.message}}</p>
@@ -12,7 +14,7 @@
 
 <script>
     export default {
-        props:['messages'],
+        props:['messages', 'blockScroll', 'down'],
         data() {
             return {
 
@@ -24,13 +26,21 @@
         methods: {
             scrollList(event) {
                var elem = this.$el;
-               if (elem.scrollTop <= 10) {
-
+               var vm = this;
+               var percents = elem.scrollTop * 100 / elem.scrollHeight;
+               if (percents < 10 && !vm.blockScroll) {
+                   if (vm.messages) {
+                       var firstMessage = vm.messages[0];
+                       vm.$emit('upload-messages', firstMessage);
+                   }
                }
             }
         },
         updated() {
-            this.$el.scrollTop = this.$el.scrollHeight;
+            if (this.down) {
+                this.$el.scrollTop = this.$el.scrollHeight;
+                this.$emit('set-down', false);
+            }
         }
     }
 </script>

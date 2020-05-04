@@ -1983,8 +1983,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['messages'],
+  props: ['messages', 'blockScroll', 'down'],
   data: function data() {
     return {};
   },
@@ -1994,12 +1996,22 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     scrollList: function scrollList(event) {
       var elem = this.$el;
+      var vm = this;
+      var percents = elem.scrollTop * 100 / elem.scrollHeight;
 
-      if (elem.scrollTop <= 10) {}
+      if (percents < 10 && !vm.blockScroll) {
+        if (vm.messages) {
+          var firstMessage = vm.messages[0];
+          vm.$emit('upload-messages', firstMessage);
+        }
+      }
     }
   },
   updated: function updated() {
-    this.$el.scrollTop = this.$el.scrollHeight;
+    if (this.down) {
+      this.$el.scrollTop = this.$el.scrollHeight;
+      this.$emit('set-down', false);
+    }
   }
 });
 
@@ -2034,29 +2046,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['user_from', 'user_to', 'messages'],
   data: function data() {
     return {
-      messageItems: this.messages
+      messageItems: this.messages,
+      blockScroll: false,
+      down: false,
+      stopUpload: false
     };
   },
   created: function created() {
-    var vm = this;
-    window.socketService.addEventListener('message', function (event) {
-      var obj = JSON.parse(event.data);
-
-      if (obj.message === 'message') {
-        var data = {};
-
-        for (var i in obj.data) {
-          data[i] = obj.data[i];
-        }
-
-        data['self'] = false;
-        vm.messageItems.push(data);
-      }
-    });
+    window.socketService.addEventListener('message', this.getMessage);
   },
   methods: {
     sended: function sended(event) {
@@ -2069,6 +2074,45 @@ __webpack_require__.r(__webpack_exports__);
 
       message['self'] = true;
       vm.messageItems.push(message);
+      this.down = true;
+    },
+    getMessage: function getMessage(event) {
+      var vm = this;
+      var obj = JSON.parse(event.data);
+
+      if (obj.message === 'message') {
+        var data = {};
+
+        for (var i in obj.data) {
+          data[i] = obj.data[i];
+        }
+
+        data['self'] = false;
+        vm.messageItems.push(data);
+        this.down = true;
+      }
+    },
+    uploadMessages: function uploadMessages(message) {
+      if (this.stopUpload) {
+        return;
+      }
+
+      var vm = this;
+      vm.blockScroll = true;
+      axios.post('/api/chat/upload-message', {
+        id: message.id,
+        self: message.self
+      }).then(function (response) {
+        if (response.data.messages.length === 0) {
+          vm.stopUpload = true;
+        }
+
+        vm.messageItems = response.data.messages.concat(vm.messageItems);
+        vm.blockScroll = false;
+      });
+    },
+    setDown: function setDown(value) {
+      this.down = value;
     }
   }
 });
@@ -38574,6 +38618,7 @@ var render = function() {
       return _c(
         "div",
         {
+          key: message.id,
           staticClass: "notification is-primary",
           class: message.self ? "is-primary" : "is-link"
         },
@@ -38633,7 +38678,16 @@ var render = function() {
     _c(
       "div",
       { staticClass: "column" },
-      [_c("messages-list", { attrs: { messages: _vm.messageItems } })],
+      [
+        _c("messages-list", {
+          attrs: {
+            messages: _vm.messageItems,
+            blockScroll: _vm.blockScroll,
+            down: _vm.down
+          },
+          on: { "upload-messages": _vm.uploadMessages, "set-down": _vm.setDown }
+        })
+      ],
       1
     )
   ])

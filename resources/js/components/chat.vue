@@ -11,6 +11,10 @@
         <div class="column">
             <messages-list
                 v-bind:messages="messageItems"
+                v-on:upload-messages="uploadMessages"
+                v-on:set-down="setDown"
+                v-bind:blockScroll="blockScroll"
+                v-bind:down="down"
             >
             </messages-list>
         </div>
@@ -23,23 +27,15 @@
         props:['user_from', 'user_to', 'messages'],
         data() {
             return {
-                messageItems:this.messages
+                messageItems:this.messages,
+                blockScroll:false,
+                down:false,
+                stopUpload:false
             };
         },
         created() {
-            var vm = this;
-            window.socketService.addEventListener('message', function(event){
-                var obj = JSON.parse(event.data);
-                if (obj.message === 'message') {
-                    var data = {};
-                    for (var i in obj.data) {
-                        data[i] = obj.data[i];
-                    }
-                    data['self'] = false;
 
-                    vm.messageItems.push(data);
-                }
-            });
+            window.socketService.addEventListener('message', this.getMessage);
         },
         methods:{
             sended(event) {
@@ -52,6 +48,41 @@
                message['self'] = true;
 
                 vm.messageItems.push(message);
+                this.down = true;
+            },
+            getMessage(event) {
+                var vm = this;
+                var obj = JSON.parse(event.data);
+                if (obj.message === 'message') {
+                    var data = {};
+                    for (var i in obj.data) {
+                        data[i] = obj.data[i];
+                    }
+                    data['self'] = false;
+                    vm.messageItems.push(data);
+                    this.down = true;
+                }
+            },
+            uploadMessages(message) {
+                if (this.stopUpload) {
+                    return;
+                }
+                var vm = this;
+                vm.blockScroll = true;
+                axios.post('/api/chat/upload-message', {
+                    id:message.id,
+                    self:message.self
+                }).then(function(response){
+                     if ( response.data.messages.length === 0)  {
+                         vm.stopUpload = true;
+                     }
+                     vm.messageItems = response.data.messages.concat(vm.messageItems);
+                     vm.blockScroll = false;
+                });
+            },
+            setDown(value) {
+
+                this.down = value;
             }
         }
     }
